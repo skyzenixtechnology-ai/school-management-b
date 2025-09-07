@@ -1,0 +1,17 @@
+{
+    "env": {
+        "node": true,
+        "es2020": true // This will make sure modern JavaScript features are supported
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:node/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "node"
+    ] // Ensure this plugin is added
+}

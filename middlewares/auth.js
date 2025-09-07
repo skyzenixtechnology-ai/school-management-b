@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken'
  * @returns {void}
  */
 function verifyToken(req, res, next) {
+
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -17,7 +18,6 @@ function verifyToken(req, res, next) {
     }
     const token = authHeader.split(" ")[1];
 
-    console.log("🚀 ~ verifyToken ~ token:", token);
 
     try {
         jwt.verify(token, process.env.JWT_SECRET);

@@ -124,7 +124,7 @@ export const login = async (req, res) => {
  */
 export const getUserById = async (req, res) => {
     try {
-        const id = req.user?.id;
+        const id = req.user.id;
 
         if (!id) {
             return res.status(401).json({ message: "Unauthorized, user id missing" });
