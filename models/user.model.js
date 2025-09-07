@@ -23,6 +23,14 @@ const User = sequelize.define(
             type: DataTypes.STRING(255),
             allowNull: false,
         },
+        gender: {
+            type: DataTypes.ENUM("MALE", "FEMALE", "OTHER"),
+            allowNull: true,
+        },
+        address: {
+            type: DataTypes.STRING(500),
+            allowNull: true,
+        },
         email: {
             type: DataTypes.STRING(255),
             unique: true,
@@ -46,6 +54,14 @@ const User = sequelize.define(
         status: {
             type: DataTypes.ENUM("ACTIVE", "INACTIVE"),
             defaultValue: "ACTIVE",
+        },
+        last_login: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+        avaitar: {
+            type: DataTypes.STRING(255),
+            allowNull: true,
         },
         created_at: {
             type: DataTypes.DATE,
