@@ -92,7 +92,10 @@ export const getAllTeachers = async (req, res) => {
     try {
         const { page = 1, limit = 10, search = "" } = req.query;
         const offset = (page - 1) * limit;
-
+        const school_id = req.user.school_id;
+        if (!school_id) {
+            return res.status(403).json({ message: "School context missing" });
+        }
         // Find teachers by filtering User table (role = TEACHER)
         const teachers = await db.User.findAndCountAll({
             where: {
@@ -102,6 +105,7 @@ export const getAllTeachers = async (req, res) => {
                     { email: { [Op.iLike]: `%${search}%` } },
                     { phone: { [Op.iLike]: `%${search}%` } },
                 ],
+                school_id,
             },
             include: [
                 {
