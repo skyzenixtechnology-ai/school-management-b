@@ -32,8 +32,6 @@ export const createClass = async (req, res) => {
 };
 
 
-
-
 export const updateClass = async (req, res) => {
     try {
         const { id } = req.params; // class id
@@ -67,8 +65,6 @@ export const updateClass = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-
-
 
 export const deleteClass = async (req, res) => {
     try {
@@ -111,10 +107,25 @@ export const getAllClasses = async (req, res) => {
     try {
         const school_id = req.user.school_id;
 
-        const classes = await db.Class.findAll({
-            where: { school_id },
-            attributes: ['id', 'name', 'section', 'room_number']
-        });
+        const classes = await db.sequelize.query(
+            `
+            SELECT 
+            c.id, 
+            c.name, 
+            c.section, 
+            c.room_number, 
+            COALESCE(s.total_students, 0) as total_students
+            FROM classes c
+            LEFT JOIN (
+            SELECT class_id, COUNT(*) as total_students
+            FROM students
+            GROUP BY class_id
+            ) s ON c.id = s.class_id
+            WHERE c.school_id = :school_id
+        `,
+            { replacements: { school_id }, type: 'SELECT' }
+        );
+
 
         if (!classes || classes.length === 0) {
             return res.status(404).json({ message: "No classes found for this school" });

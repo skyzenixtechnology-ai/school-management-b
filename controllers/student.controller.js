@@ -203,3 +203,23 @@ export const getAllStudents = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch students" });
     }
 };
+
+export const getStudentByClass = async (req, res) => {
+    try {
+        const class_id = req.params.id;
+        const students = await db.Student.findAll({
+            where: {
+                class_id
+            }
+        })
+        if (!students || students.length === 0) {
+            return res.status(404).json({ message: "No students found for this school" });
+        }
+
+        res.status(200).json(students);
+    } catch (error) {
+        console.error("❌ Error fetching students:", error);
+        res.status(500).json({ error: "Failed to fetch students" });
+
+    }
+}

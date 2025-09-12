@@ -52,16 +52,7 @@ export const registerUser = async (req, res) => {
         );
 
         return res.status(201).json({
-            message: "db.User & School registered successfully",
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                school_id: school.id,
-            },
-            school,
-            token,
+            message: "db.User & School registered successfully", data: token,
         });
     } catch (error) {
         console.error("Error in registerUser:", error);
@@ -80,11 +71,11 @@ export const login = async (req, res) => {
         // find user
         const user = await db.User.findOne({ where: { email }, include: School });
         if (!user) {
-            return res.status(404).json({ message: "db.User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         if (user.status !== "ACTIVE") {
-            return res.status(403).json({ message: "db.User account is inactive" });
+            return res.status(403).json({ message: "User account is inactive" });
         }
 
         // check password
@@ -100,18 +91,7 @@ export const login = async (req, res) => {
             { expiresIn: "1d" }
         );
 
-        return res.status(200).json({
-            message: "Login successful",
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                school_id: user.school_id,
-            },
-            school: user.School,
-            token,
-        });
+        return res.status(200).json({ message: "Login successful", data: token });
     } catch (error) {
         console.error("Login error:", error);
         return res.status(500).json({ message: "Server error" });
@@ -125,13 +105,12 @@ export const login = async (req, res) => {
 export const getUserById = async (req, res) => {
     try {
         const id = req.user.id;
-
         if (!id) {
             return res.status(401).json({ message: "Unauthorized, user id missing" });
         }
 
         const user = await db.User.findByPk(id, {
-            attributes: { exclude: ["password"] },
+            attributes: { exclude: ["password", "created_at", "updated_at"] },
             include: [
                 {
                     model: db.School,
